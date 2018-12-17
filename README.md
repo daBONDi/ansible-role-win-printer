@@ -1,7 +1,9 @@
 # win-printer
 
 > CAUTION! This role is a version for a internal System, it is not maintaned or supported by me(@daBONDi)
-> Use it only as reference and ideas!
+>
+> **Use it only as reference and ideas(Community you know?)**
+>
 
 Create/Configure a Windows Printer
 
@@ -9,7 +11,7 @@ This Role Combines multiple Modules to create/config a network printer
 
 ## Requirements
 
-- Ensure setprinter.exe is under files directory
+- Ensure setprinter.exe is under files directory!
   - Download it from Windows 2003 Server Resource Kit
 - Ensure Windows Printing Service Feature is installed, see rol: **win-print-service**
 - Ensure the Drivers are already preinstalled, see role: **win-printer-driver**
