@@ -1,0 +1,7 @@
+- name: "Ensure printer port {{ item.network.ip_address }} is {{ item.state }}"
+  win_printer_port:
+    port_name: "{{ item.network.ip_address }}"
+    host_address: "{{ item.network.ip_address }}"
+    snmp_index: "{{ item.network.snmp_index | default(1) }}"
+    snmp_community: "{{ item.network.snmp_community | default('public') }}"
+    snmp_enabled: "{{ item.network.snmp_enabled | default(true) }}"

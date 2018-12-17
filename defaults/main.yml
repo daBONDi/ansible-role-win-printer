@@ -1,0 +1,13 @@
+ad_group_user_prefix: "usg-printer"
+ad_group_user_ou: "{{ default_domain_usg_printer_ou }}"
+
+ad_group_admin_prefix: "asg-printer"
+ad_group_admin_ou: "{{ default_domain_asg_printer_ou }}"
+
+ad_default_group_scope: "Global"
+ad_default_group_category: "Security"
+
+ad_processing_host: "{{ default_domain_working_host }}"
+
+
+setprinter_exe : "{{ print_service.tools_path }}/setprinter.exe"

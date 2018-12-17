@@ -1,0 +1,9 @@
+- name: "Ensure Printer {{ item.name | upper }}"
+  win_printer:
+    name: "{{ item.name | upper }}"
+    share_name: "{{ item.name | upper }}"
+    comment: "{{ item.printer_type.papersize }}, {{ item.printer_type.type }}{% if item.printer_type.duplex %}, Duplex{% endif %}{% if item.printer_type.color %}, Farbe{% else %}, Schwarzweiß{% endif %} (Managed by Ansible)"
+    location: "{{ item.location }}"
+    publish: "{{ item.publish | default(true) }}"
+    printer_port: "{{ item.network.ip_address }}"
+    printer_driver: "{{ item.printer_type.driver_name }}"

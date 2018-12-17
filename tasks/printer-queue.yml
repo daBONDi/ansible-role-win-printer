@@ -1,0 +1,13 @@
+# Set the printer queue settings
+
+- name: "Set desired Printer Queue Settings on {{ item.name }}"
+  win_printer_queue:
+    printer: "{{ item.name }}"
+    queued: "{{ item.queue.queued | default(omit) }}"
+    do_complete_first: "{{ item.queue.do_complete_first | default(omit) }}"
+  when: "item.queue is defined"
+
+- name: "Ensure default Printer Queue Settings on {{ item.name }}"
+  win_printer_queue:
+    printer: "{{ item.name }}"
+  when: "item.queue is not defined"

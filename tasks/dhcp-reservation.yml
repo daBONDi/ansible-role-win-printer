@@ -1,0 +1,9 @@
+- name: "Ensure DHCP Reservation for Printer Port {{ item.network.ip_address }}"
+  win_dsc:
+    resource_name: "xDhcpServerReservation"
+    ScopeId: "{{ ( item.network.ip_address | ipsubnet(24,0) ).split('/')[0] }}"   # Get the Network ID(172.16.100.0) form a /24 Subnet
+    ClientMacAddress: "{{ item.network.mac_address | hwaddr }}"
+    IPAddress: "{{ item.network.ip_address }}"
+    Name: "{{ item.name | upper}}"
+    AddressFamily: "IPv4"
+  delegate_to: "{{ default_dhcp_server }}"

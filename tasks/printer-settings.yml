@@ -1,0 +1,17 @@
+- name: "Set additonal Printer Driver Default Settings"
+  win_printer_settings:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    printer_level: "{{ item.printer_level | default(8) }}"
+    printer: "{{ printer.name }}"
+  with_items: "{{ printer.additional_settings }}"
+  when: "printer.additional_settings is defined"
+
+- name: "Set Driver specific Printer Driver Default Settings"
+  win_printer_settings:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    printer_level: "{{ item.printer_level | default(8) }}"
+    printer: "{{ printer.name }}"
+  with_items: "{{ printer.printer_type.driver_settings }}"
+  when: "printer.printer_type.driver_settings is defined"

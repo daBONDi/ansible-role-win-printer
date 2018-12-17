@@ -1,0 +1,8 @@
+- name: "Ensure DNS A Record Exists for Printer Port {{ item.network.ip_address }}"
+  win_dsc:
+    resource_name: "xDnsRecord"
+    Name: "{{ item.name | lower }}"
+    Zone: "{{ domain_name }}"
+    Target: "{{ item.network.ip_address }}"
+    Type: "ARecord"
+  delegate_to: "{{ ad_processing_host }}"

@@ -1,0 +1,60 @@
+# Filter Printer List with 'printer' role variable if defined
+- name: "Work only on selected Printer"
+  set_fact:
+    printers: "{{ printers | selectattr('name', 'equalto', only_with_printer) | list }}"
+  when: "only_with_printer is defined"
+
+# Configure Printer Port
+
+- include_tasks: printer-port.yml
+  with_items: "{{ printers }}"
+
+# Ensure DHCP Reservation
+- name: "Ensure xDHCP DSC Resource is installed"
+  win_psmodule:
+    name: xDhcpServer
+    state: present
+  run_once: true
+  delegate_to: "{{ default_dhcp_server }}"
+
+- include_tasks: dhcp-reservation.yml
+  with_items: "{{ printers }}"
+
+# Configure <printername>.josephinum.at
+- name: "Ensure xDnsServer DSC Resource is installed"
+  win_psmodule:
+    name: "xDnsServer"
+  delegate_to: "{{ default_domain_working_host }}"
+
+- include_tasks: "dns-a-record.yml"
+  with_items: "{{ printers }}"
+
+# Configure Printer
+- include_tasks: printer.yml
+  with_items: "{{ printers }}"
+
+# Configure Printer Permissions
+- name: "Install xActiveDirectory Powershell DSC Resource"
+  win_psmodule:
+    name: xActiveDirectory
+    state: present
+  delegate_to: "{{ ad_processing_host }}"
+
+- include_tasks: printer-permission.yml
+  with_items: "{{ printers }}"
+
+# Deploy setprinter.exe
+- include_tasks: deploy-setprinter.yml
+
+# Set Printer Settings
+- include_tasks: printer-settings.yml
+  with_items: "{{ printers }}"
+  loop_control:
+    loop_var: printer
+
+# Set Printer Setting Queue
+- include_tasks: printer-queue.yml
+  with_items: "{{ printers }}"
+
+# Update HP Printer Settings with the updatetool
+

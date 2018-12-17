@@ -1,0 +1,11 @@
+# Deploy the SetPrinter.exe into the Printer Tools Directory(typcial c:\data\tools)
+
+- name: "Ensure Tools Directory"
+  win_file:
+    path: "{{ print_service.tools_path }}"
+    state: directory
+
+- name: "Ensure setprinter.exe utility is in tools storage location"
+  win_copy:
+    src: "files/setprinter.exe"
+    dest: "{{ setprinter_exe }}"

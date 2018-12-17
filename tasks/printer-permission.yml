@@ -1,0 +1,44 @@
+- name: "Ensure Everyone Permission is removed from {{ item.name | upper }}"
+  win_printer_permission:
+    printer: "{{ item.name }}"
+    user: "EVERYONE"
+    state: absent
+
+- name: "Ensure AD user-service-group for {{ item.name | upper }}"
+  win_dsc:
+    resource_name: "xADGroup"
+    GroupName: "{{ ad_group_user_prefix }}-{{ item.name | lower }}"
+    Path: "{{ ad_group_user_ou }}"
+    Description: "Printing permission for printer share {{ item.name | upper }} on {{ inventory_hostname | lower }}"
+    Members: "{{ item.permission.users | join(',') | default(null) }}"
+    Ensure: "Present"
+    Notes: "Managed by Ansible"
+    GroupScope: "{{ ad_default_group_scope }}"
+    Category: "{{ ad_default_group_category }}"
+  delegate_to: "{{ ad_processing_host }}"
+
+- name: "Ensure AD admin-service-group for {{ item.name | upper }}"
+  win_dsc:
+    resource_name: "xADGroup"
+    GroupName: "{{ ad_group_admin_prefix }}-{{ item.name | lower }}"
+    Path: "{{ ad_group_admin_ou }}"
+    Description: "Administrative permission for printer share {{ item.name | upper }} on {{ inventory_hostname | lower }}"
+    Members: "{{ item.permission.admins | join(',') | default(null) }}"
+    Ensure: "Present"
+    Notes: "Managed by Ansible"
+    GroupScope: "{{ ad_default_group_scope }}"
+    Category: "{{ ad_default_group_category }}"
+  delegate_to: "{{ ad_processing_host }}"
+
+- name: "Ensure printing permission on {{ iten.name | upper }}"
+  win_printer_permission:
+    printer: "{{ item.name }}"
+    user: "{{ ad_group_user_prefix }}-{{ item.name | lower }}"
+
+- name: "Ensure administrative permission on {{ item.name | upper }}"
+  win_printer_permission:
+    printer: "{{ item.name }}"
+    user: "{{ ad_group_admin_prefix }}-{{ item.name | lower }}"
+    print: "yes"
+    manage_docs: "yes"
+    manage_printer: "yes"
